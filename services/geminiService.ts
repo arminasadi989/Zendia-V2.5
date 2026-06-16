@@ -32,9 +32,9 @@ const ai = {
   }
 };
 
-// Models
-const TEXT_MODEL = 'gemini-3.1-flash-lite';
-const TTS_MODEL = 'gemini-3.1-flash-tts';
+// Models - using correct and available model names
+const TEXT_MODEL = 'gemini-2.5-flash-lite';
+const TTS_MODEL = 'gemini-2.5-flash-preview-tts';
 
 export const generatePersianSpeech = async (text: string, voiceName: string = 'Kore'): Promise<string> => {
   try {
@@ -315,7 +315,7 @@ export const analyzeDailyNews = async (topicId: string, topicLabel: string, styl
     تاریخ امروز (میلادی/ساعت): ${endGregorian}
     بازه زمانی دقیق ۲۴ ساعت گذشته: از ${startGregorian} تا ${endGregorian}
     
-    جدول تطبیقی دقیق تاریخ میلادی به شمسی (از سیستم استخراج ش��ه و کاملاً معتبر و دقیق است):
+    جدول تطبیقی دقیق تاریخ میلادی به شمسی (از سیستم استخراج شده و کاملاً معتبر و دقیق است):
     ${mappingTableStr}
 
     دستورالعمل‌های حیاتی برای تب مرور اخبار روز:
