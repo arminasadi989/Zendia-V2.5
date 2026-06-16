@@ -25,8 +25,8 @@ const ai = {
 };
 
 // Models
-const TEXT_MODEL = 'gemini-2.5-flash-lite';
-const TTS_MODEL = 'gemini-3.1-flash-tts';
+const TEXT_MODEL = 'gemini-3.1-flash-lite';
+const TTS_MODEL = 'gemini-2.5-flash';
 
 export const generatePersianSpeech = async (text: string, voiceName: string = 'Kore'): Promise<string> => {
   try {
@@ -311,7 +311,7 @@ export const analyzeDailyNews = async (topicId: string, topicLabel: string, styl
     ${mappingTableStr}
 
     دستورالعمل‌های حیاتی برای تب مرور اخبار روز:
-    1. ${searchInstructions} دایره جستجو را فقط به ۲۴ ساعت اخیر محدود کنید. اگر می‌خواهید مبنا و درستی زمان امروز را تایید کنید، حتماً از منابع معتبر اعلام تاریخ زم��ن لایو وب استعلام بگیرید یا از تطابق جدول استفاده نمایید.
+    1. ${searchInstructions} دایره جستجو را فقط به ۲۴ ساعت اخیر محدود کنید. اگر می‌خواهید مبنا و درستی زمان امروز را تایید کنید، حتماً از منابع معتبر اعلام تاریخ زمان لایو وب استعلام بگیرید یا از تطابق جدول استفاده نمایید.
     2. ${sourceConstraint}
     3. مهمترین شرط: جستجوی اخبار باید با توجه به تاریخ میلادی امروز (${todayGregorian}) و حداکثر تا ۲۴ ساعت قبل آن انجام شود.
     4. در خروجی فقط و فقط اخبار یک روز اخیر تولید شود.
