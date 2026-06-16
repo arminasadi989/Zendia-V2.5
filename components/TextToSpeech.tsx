@@ -386,17 +386,20 @@ export const TextToSpeech: React.FC<TextToSpeechProps> = ({ onStatusChange, show
     const errStr = error.message || error.toString() || "";
     const status = error.status || error.statusCode || "";
 
-    // Check for missing or invalid API key error
+    // Check for missing API key error first
     const isApiKeyMissing =
       errStr.includes("API_KEY_MISSING") ||
+      errStr.toLowerCase().includes("api key") ||
       errStr.toLowerCase().includes("api_key_invalid") ||
       errStr.toLowerCase().includes("invalid api key") ||
-      errStr.toLowerCase().includes("invalid_api_key") ||
-      errStr.toLowerCase().includes("api key not valid") ||
-      errStr.toLowerCase().includes("unauthenticated") ||
-      (status === 400 && errStr.toLowerCase().includes("api key")) ||
+      status === 400 ||
       status === 401 ||
-      (status === 403 && errStr.toLowerCase().includes("api"));
+      status === 403 ||
+      errStr.includes("400") ||
+      errStr.includes("401") ||
+      errStr.toLowerCase().includes("invalid_api_key") ||
+      errStr.toLowerCase().includes("permission_denied") ||
+      errStr.toLowerCase().includes("unauthenticated");
 
     if (isApiKeyMissing) {
       const reason = `کلید API جیمینی (GEMINI_API_KEY) تنظیم نشده یا نامعتبر است. لطفاً از بخش «کلید هوش مصنوعی اختصاصی» کلید معتبر خود را وارد کنید. می‌توانید یک کلید رایگان از Google AI Studio دریافت نمایید.`;
