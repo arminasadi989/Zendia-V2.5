@@ -13,16 +13,8 @@ export const getCustomApiKey = () => {
   return customApiKey;
 };
 
-const getApiKey = (): string => {
-  const key = customApiKey || import.meta.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
-  if (!key) {
-    throw new Error("API_KEY_MISSING: کلید API جیمینی تنظیم نشده است. لطفاً GEMINI_API_KEY را در تنظیمات محیطی وارد کنید یا از کلید اختصاصی خود استفاده کنید.");
-  }
-  return key;
-};
-
 const getAiInstance = () => {
-  const apiKey = getApiKey();
+  const apiKey = customApiKey || import.meta.env.GEMINI_API_KEY;
   return new GoogleGenAI({ apiKey });
 };
 
@@ -34,7 +26,7 @@ const ai = {
 
 // Models
 const TEXT_MODEL = 'gemini-3.1-flash-lite';
-const TTS_MODEL = 'gemini-3.1-flash-tts';
+const TTS_MODEL = 'gemini-2.5-flash';
 
 export const generatePersianSpeech = async (text: string, voiceName: string = 'Kore'): Promise<string> => {
   try {
@@ -315,11 +307,11 @@ export const analyzeDailyNews = async (topicId: string, topicLabel: string, styl
     تاریخ امروز (میلادی/ساعت): ${endGregorian}
     بازه زمانی دقیق ۲۴ ساعت گذشته: از ${startGregorian} تا ${endGregorian}
     
-    جدول تطبیقی دقیق تاریخ میلادی به شمسی (از سیستم استخراج ش��ه و کاملاً معتبر و دقیق است):
+    جدول تطبیقی دقیق تاریخ میلادی به شمسی (از سیستم استخراج شده و کاملاً معتبر و دقیق است):
     ${mappingTableStr}
 
     دستورالعمل‌های حیاتی برای تب مرور اخبار روز:
-    1. ${searchInstructions} دایره جستجو را فقط به ۲۴ ساعت اخیر محدود کنید. اگر می‌خواهید مبنا و درستی زمان امروز را تایید کنید، حتماً از منابع معتبر اعلام تاریخ زم��ن لایو وب استعلام بگیرید یا از تطابق جدول استفاده نمایید.
+    1. ${searchInstructions} دایره جستجو را فقط به ۲۴ ساعت اخیر محدود کنید. اگر می‌خواهید مبنا و درستی زمان امروز را تایید کنید، حتماً از منابع معتبر اعلام تاریخ زمان لایو وب استعلام بگیرید یا از تطابق جدول استفاده نمایید.
     2. ${sourceConstraint}
     3. مهمترین شرط: جستجوی اخبار باید با توجه به تاریخ میلادی امروز (${todayGregorian}) و حداکثر تا ۲۴ ساعت قبل آن انجام شود.
     4. در خروجی فقط و فقط اخبار یک روز اخیر تولید شود.
