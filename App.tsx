@@ -33,6 +33,7 @@ const App: React.FC = () => {
       setIsCustomKeyActive(true);
       setIsKeySavedSuccessfully(true);
       setTimeout(() => setIsKeySavedSuccessfully(false), 2000);
+      setTimeout(() => setIsQuotaModalOpen(false), 1200);
     } else {
       setCustomApiKey(null);
       setApiKeyValue('');
