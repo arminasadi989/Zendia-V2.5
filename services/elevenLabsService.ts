@@ -11,7 +11,6 @@ const LS_ELEVENLABS_VOICE_ID = 'zendia_elevenlabs_voice_id';
 
 // "Rachel" - a standard ElevenLabs premade multilingual-capable voice available to every account.
 const DEFAULT_ELEVENLABS_VOICE_ID = '21m00Tcm4TlvDq8ikWAM';
-const ELEVENLABS_MODEL_ID = 'eleven_multilingual_v2';
 
 // --- TTS Provider selection (persisted) ---
 export const getTtsProvider = (): TtsProvider => {
@@ -65,22 +64,14 @@ export const generateElevenLabsSpeechStream = async (
 
   const resolvedVoiceId = voiceId || getElevenLabsVoiceId();
 
-  const response = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${resolvedVoiceId}/stream?output_format=pcm_24000`,
-    {
-      method: 'POST',
-      headers: {
-        'xi-api-key': apiKey,
-        'Content-Type': 'application/json',
-        'Accept': 'audio/pcm',
-      },
-      body: JSON.stringify({
-        text,
-        model_id: ELEVENLABS_MODEL_ID,
-        voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-      }),
-    }
-  );
+  // Routed through our own same-origin Vercel function (api/elevenlabs-tts.ts) instead of
+  // calling api.elevenlabs.io directly from the browser, since ElevenLabs' own docs note
+  // that direct frontend calls can trigger a CORS error.
+  const response = await fetch('/api/elevenlabs-tts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, apiKey, voiceId: resolvedVoiceId }),
+  });
 
   if (!response.ok) {
     let detail = '';
