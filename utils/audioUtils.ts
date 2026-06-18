@@ -10,6 +10,20 @@ export function decode(base64: string): Uint8Array {
   return bytes;
 }
 
+// Merge an array of PCM byte chunks (e.g. received progressively from a streaming TTS response)
+// into a single contiguous Uint8Array, used to rebuild a playable WAV as more audio arrives.
+export function concatPcmChunks(chunks: Uint8Array[]): Uint8Array {
+  let totalLength = 0;
+  for (const chunk of chunks) totalLength += chunk.length;
+  const result = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const chunk of chunks) {
+    result.set(chunk, offset);
+    offset += chunk.length;
+  }
+  return result;
+}
+
 // PCM Audio Decoder (Keep for legacy or if needed for visuals later)
 export async function decodeAudioData(
   data: Uint8Array,
