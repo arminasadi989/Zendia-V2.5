@@ -137,6 +137,15 @@
 </head>
   <body class="bg-slate-950 text-slate-200 h-screen w-screen overflow-hidden selection:bg-primary-500 selection:text-white">
     <div id="root" class="h-full w-full"></div>
+    <div id="splash-screen" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 10%, #1e293b 0%, #020617 100%);transition:opacity .4s ease;">
+      <img src="/splash.png" alt="Zendia" style="max-width:80%;max-height:82vh;width:auto;height:auto;object-fit:contain;animation:splashPulse 1.8s ease-in-out infinite;" />
+    </div>
+    <style>
+      @keyframes splashPulse {
+        0%, 100% { opacity: 0.85; transform: scale(0.98); }
+        50% { opacity: 1; transform: scale(1); }
+      }
+    </style>
   <script type="module" src="/index.tsx"></script>
 </body>
 </html>
