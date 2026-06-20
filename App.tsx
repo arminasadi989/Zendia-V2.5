@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { TextToSpeech } from './components/TextToSpeech';
 import { UserGuide } from './components/UserGuide';
@@ -10,6 +10,14 @@ import { setCustomApiKey, getCustomApiKey } from './services/geminiService';
 type ModuleType = 'analyzer' | 'radar';
 
 const App: React.FC = () => {
+  useEffect(() => {
+    const splash = document.getElementById('splash-screen');
+    if (splash) {
+      splash.style.opacity = '0';
+      setTimeout(() => splash.remove(), 400);
+    }
+  }, []);
+
   const [appStatus, setAppStatus] = useState<AppStatus>(AppStatus.IDLE);
   const [guideTrigger, setGuideTrigger] = useState<number>(0);
   const [showHistory, setShowHistory] = useState<boolean>(false);
