@@ -25,7 +25,7 @@ const ai = {
 };
 
 // Models
-const TEXT_MODEL = 'gemini-2.5-flash-lite';
+const TEXT_MODEL = 'gemini-3.1-flash-lite';
 const TTS_MODEL = 'gemini-2.5-flash-preview-tts';
 
 export const generatePersianSpeech = async (text: string, voiceName: string = 'Kore'): Promise<string> => {
@@ -284,6 +284,7 @@ export const analyzeNewsFromTopic = async (topicId: string, topicLabel: string, 
     4. پس از اتمام اخبار یک روز، به سطر بعد بروید و تاریخ شمسی روز قبل تر را بنویسید و اخبار آن روز را ذکر کنید، و این کار را برای تمامی ۷ روز گذشته تکرار کنید.
     5. فقط و فقط از "تاریخ شمسی" استفاده شود و مطلقاً هیچ تاریخ میلادی در خروجی نهایی ظاهر نشود. در صورتی که تاریخ دریافت شده میلادی است سریعاً آن را با دقت بالا براساس جدول تطبیقِ قید شده بالا به تاریخ شمسی متناظر معادل‌سازی کنید.
     6. سعی کنید اخبار اصلی و مهم این ۷ روز را با دقت بالا جستجو کنید تا خبری از قلم نیفتد. حتی اگر در یک روز چندین خبر مهم بود، تمام آنها پوشش داده شود.
+    7. قانون حیاتی ضد‌حدس‌زنی: اگر برای یک یا چند روز از این بازه، هیچ خبر تأییدشده‌ای از طریق جستجوی زنده واقعی پیدا نکردید، به‌هیچ‌وجه از دانش قبلی یا حافظهٔ آموزشی خود برای ساختن یا تخمین زدن خبر آن روز استفاده نکنید. در عوض، برای آن روز فقط بنویسید: "خبر قابل تأیید و معتبری برای این روز یافت نشد." دقت در صداقت گزارش، مهم‌تر از پر کردن همهٔ روزهاست.
     `;
 
     try {
@@ -356,6 +357,7 @@ export const analyzeDailyNews = async (topicId: string, topicLabel: string, styl
     7. فقط اندازه متن، طولانی بودن توضیحات و لحن کلام بر اساس سبک انتخابی تغییر میکند، اما در تعداد اخبار تغییری ایجاد نشود.
     8. اکیداً اخبار دیروز، چند روز قبل یا هفته پیش را حذف کنید.
     9. قانون طلایی عدم تکرار تاریخ: از آنجا که کلیه اخبار مربوط به امروز (${todayDate}) است، تاریخ را فقط و فقط یک بار در ابتدای کل پاسخ بیاورید و اکیداً ممنوع است که قبل از شروع هر خبر جدید، پاراگراف جدید یا هر خط جدیدی تاریخ را تکرار یا تکرار مجدد کنید.
+    10. قانون حیاتی ضد‌حدس‌زنی: اگر در جستجوی زنده هیچ خبر تأییدشده‌ای دقیقاً مربوط به همین ۲۴ ساعت گذشته پیدا نکردید، به‌هیچ‌وجه از دانش قبلی یا حافظهٔ آموزشی خود برای جایگزین کردن یا تخمین زدن خبر استفاده نکنید (این دقیقاً همان چیزی است که باعث نمایش اخبار با تاریخ قدیمی و نادرست می‌شود). در عوض، صادقانه بنویسید: "خبر تأییدشده و معتبری برای ۲۴ ساعت گذشته در این موضوع یافت نشد."
     `;
 
     try {
@@ -797,37 +799,13 @@ export const getDetailedSupplementaryNews = async (newsText: string): Promise<Su
       });
     }
 
-    // Add search-query fallback links to reach exactly 3 sources if we don't have enough
-    if (finalSources.length < 3) {
-      const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(newsText)}`;
-      if (!finalSources.some(s => s.url === googleSearchUrl)) {
-        finalSources.push({
-          title: "جستجوی زنده گوگل درباره این خبر",
-          url: googleSearchUrl
-        });
-      }
-    }
-    if (finalSources.length < 3) {
-      const googleNewsUrl = `https://news.google.com/search?q=${encodeURIComponent(newsText)}`;
-      if (!finalSources.some(s => s.url === googleNewsUrl)) {
-        finalSources.push({
-          title: "جستجوی زنده اخبار گوگل بخش فارسی",
-          url: googleNewsUrl
-        });
-      }
-    }
-    // Also fallback to main homepages if still less than 3
-    const majorHomepages = [
-      { title: "خبرگزاری زومیت", url: "https://www.zoomit.ir" },
-      { title: "دیجیاتو مرجع فناوری", url: "https://digiato.com" },
-      { title: "خبرگزاری ایسنا", url: "https://www.isna.ir" }
-    ];
-    for (const hp of majorHomepages) {
-      if (finalSources.length >= 3) break;
-      if (!finalSources.some(s => s.url === hp.url)) {
-        finalSources.push(hp);
-      }
-    }
+    // Only fall back if we found NO real grounding-based source at all.
+    // We no longer pad with fake-looking static homepage links (Zoomit/Digiato/Isna)
+    // when real sources exist but are fewer than 3 - showing 1-2 real sources is more
+    // honest than padding up to 3 with sources that have nothing to do with this news item.
+    // If truly zero real sources were found, we leave finalSources empty so the UI can
+    // honestly tell the user no valid live search result was found, instead of showing
+    // a disguised fallback link.
 
     return {
       summary: parsed.summary || "اطلاعات تکمیلی در دسترس نیست.",
@@ -853,11 +831,7 @@ export const getDetailedSupplementaryNews = async (newsText: string): Promise<Su
         const parsed = JSON.parse(textR);
         return {
           summary: parsed.summary || "پاسخ با موفقیت بازیابی نشد.",
-          sources: [
-            { title: "جستجوی وب گوگل", url: `https://www.google.com/search?q=${encodeURIComponent(newsText)}` },
-            { title: "دیجیاتو مرجع فناوری", url: "https://digiato.com" },
-            { title: "خبرگزاری زومیت", url: "https://www.zoomit.ir" }
-          ]
+          sources: []
         };
     }
     throw error;
