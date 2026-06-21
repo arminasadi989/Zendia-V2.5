@@ -785,6 +785,8 @@ export const getDetailedSupplementaryNews = async (newsText: string): Promise<Su
     
     // Grab grounding metadata sources - these are 100% real and active!
     const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+    console.log("[DEBUG] webSearchQueries:", response.candidates?.[0]?.groundingMetadata?.webSearchQueries);
+    console.log("[DEBUG] groundingChunks count:", groundingChunks?.length || 0, groundingChunks);
     if (groundingChunks && groundingChunks.length > 0) {
       groundingChunks.forEach((chunk: any) => {
         if (chunk.web?.uri) {
