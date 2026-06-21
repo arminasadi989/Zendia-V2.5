@@ -25,7 +25,7 @@ const ai = {
 };
 
 // Models
-const TEXT_MODEL = 'gemini-3.1-flash-lite';
+const TEXT_MODEL = 'gemini-2.5-flash-lite';
 const TTS_MODEL = 'gemini-2.5-flash-preview-tts';
 
 export const generatePersianSpeech = async (text: string, voiceName: string = 'Kore'): Promise<string> => {
@@ -838,3 +838,4 @@ export const getDetailedSupplementaryNews = async (newsText: string): Promise<Su
   }
 };
 
+ 
