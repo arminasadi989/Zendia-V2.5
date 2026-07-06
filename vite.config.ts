@@ -6,6 +6,7 @@ export default defineConfig({
   server: {
     port: 3000,
     host: '0.0.0.0',
+    alloWdhosts: 'zendia-v2-5.onrender.com', 
   },
   plugins: [react()],
   envPrefix: ['VITE_', 'GEMINI_'],
